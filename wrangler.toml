@@ -2,14 +2,5 @@
 name = "homeharvest-webapp"
 compatibility_date = "2024-08-28"
 
-[build]
-command = "echo 'No build required for static site'"
-cwd = "."
-
-[env.production]
-# Production environment variables
-ENVIRONMENT = "production"
-
-[env.preview]  
-# Preview environment variables
-ENVIRONMENT = "preview"
+# No build configuration needed for static site
+# Files in public/ directory will be deployed automatically
