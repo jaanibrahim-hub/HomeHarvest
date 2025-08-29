@@ -1,0 +1,36 @@
+# Cloudflare Pages ignore file
+# Exclude Python files and dependencies to avoid build timeouts
+
+# Python files
+*.py
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Poetry files
+poetry.lock
+pyproject.toml
+
+# Python directories
+homeharvest/
+tests/
+examples/
+
+# Git files
+.git/
+.gitignore
+.github/
+
+# Documentation (except deployment guide)
+README.md
+LICENSE
+.pre-commit-config.yaml
+
+# Only include web application files
+!public/
+!functions/
+!_redirects
+!wrangler.toml
+!package.json
+!CLOUDFLARE_DEPLOYMENT.md
