@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeHarvest - Smart Property Search</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Professional real estate search platform powered by HomeHarvest. Search properties from Realtor.com with advanced filtering and analytics.">
+    <meta name="keywords" content="real estate, property search, homes for sale, homes for rent, MLS, HomeHarvest">
+    <meta name="author" content="HomeHarvest">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-home me-2"></i>HomeHarvest
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#search">
+                            <i class="fas fa-search me-1"></i>Search Properties
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://github.com/Bunsly/HomeHarvest" target="_blank">
+                            <i class="fab fa-github me-1"></i>GitHub
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container my-4">
+        <!-- Hero Section -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="text-center">
+                    <h1 class="display-4 mb-3 fade-in-up">
+                        <i class="fas fa-home me-3"></i>HomeHarvest
+                    </h1>
+                    <p class="lead text-muted mb-4 fade-in-up">
+                        Professional real estate search platform with intelligent filtering and market analytics
+                    </p>
+                    <div class="row justify-content-center fade-in-up">
+                        <div class="col-md-8">
+                            <div class="quick-stats d-flex justify-content-around text-center">
+                                <div class="stats-card flex-fill mx-2">
+                                    <div class="stats-number" id="totalSearches">0</div>
+                                    <div class="stats-label">Searches Today</div>
+                                </div>
+                                <div class="stats-card flex-fill mx-2">
+                                    <div class="stats-number" id="avgPrice">$450K</div>
+                                    <div class="stats-label">Avg Price</div>
+                                </div>
+                                <div class="stats-card flex-fill mx-2">
+                                    <div class="stats-number" id="propertiesFound">0</div>
+                                    <div class="stats-label">Properties Found</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" id="search">
+            <!-- Search Form -->
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow-lg">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-search me-2"></i>Smart Property Search
+                        </h5>
+                        <small class="text-white-50">Find your perfect property with advanced filters</small>
+                    </div>
+                    <div class="card-body">
+                        <!-- Search Progress -->
+                        <div class="progress-container" id="searchProgress" style="display: none;">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                            </div>
+                            <div class="loading-text">
+                                <span id="progressText">Initializing search...</span>
+                            </div>
+                        </div>
+
+                        <form id="searchForm">
+                            <!-- Smart Location Input -->
+                            <div class="mb-4">
+                                <label for="location" class="form-label">
+                                    <i class="fas fa-map-marker-alt me-2 text-primary"></i>Location *
+                                </label>
+                                <div class="position-relative">
+                                    <input type="text" class="form-control" id="location" name="location" 
+                                           placeholder="Enter city, state, zip code, or address..." required>
+                                    <div class="search-suggestions position-absolute w-100" id="locationSuggestions" style="display: none;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Listing Type -->
+                            <div class="mb-4">
+                                <label class="form-label">
+                                    <i class="fas fa-tags me-2 text-primary"></i>Listing Type
+                                </label>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <input type="radio" class="btn-check" name="listing_type" value="for_sale" id="for_sale" checked>
+                                        <label class="btn btn-outline-primary w-100" for="for_sale">
+                                            <i class="fas fa-dollar-sign me-1"></i>For Sale
+                                        </label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="radio" class="btn-check" name="listing_type" value="for_rent" id="for_rent">
+                                        <label class="btn btn-outline-primary w-100" for="for_rent">
+                                            <i class="fas fa-key me-1"></i>For Rent
+                                        </label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="radio" class="btn-check" name="listing_type" value="sold" id="sold">
+                                        <label class="btn btn-outline-primary w-100" for="sold">
+                                            <i class="fas fa-handshake me-1"></i>Sold
+                                        </label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="radio" class="btn-check" name="listing_type" value="pending" id="pending">
+                                        <label class="btn btn-outline-primary w-100" for="pending">
+                                            <i class="fas fa-clock me-1"></i>Pending
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Property Types -->
+                            <div class="mb-4">
+                                <label class="form-label">
+                                    <i class="fas fa-home me-2 text-primary"></i>Property Types
+                                </label>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <input class="btn-check" type="checkbox" name="property_type" 
+                                               value="single_family" id="single_family">
+                                        <label class="btn btn-outline-secondary w-100" for="single_family">
+                                            <i class="fas fa-home d-block mb-1"></i>
+                                            <small>Single Family</small>
+                                        </label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input class="btn-check" type="checkbox" name="property_type" 
+                                               value="condos" id="condos">
+                                        <label class="btn btn-outline-secondary w-100" for="condos">
+                                            <i class="fas fa-building d-block mb-1"></i>
+                                            <small>Condos</small>
+                                        </label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input class="btn-check" type="checkbox" name="property_type" 
+                                               value="townhomes" id="townhomes">
+                                        <label class="btn btn-outline-secondary w-100" for="townhomes">
+                                            <i class="fas fa-city d-block mb-1"></i>
+                                            <small>Townhomes</small>
+                                        </label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input class="btn-check" type="checkbox" name="property_type" 
+                                               value="multi_family" id="multi_family">
+                                        <label class="btn btn-outline-secondary w-100" for="multi_family">
+                                            <i class="fas fa-users d-block mb-1"></i>
+                                            <small>Multi Family</small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Advanced Options -->
+                            <div class="accordion mb-4" id="advancedAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                                data-bs-target="#advancedCollapse">
+                                            <i class="fas fa-cog me-2"></i>Advanced Settings
+                                        </button>
+                                    </h2>
+                                    <div id="advancedCollapse" class="accordion-collapse collapse">
+                                        <div class="accordion-body">
+                                            <div class="row g-3">
+                                                <div class="col-6">
+                                                    <label for="past_days" class="form-label small">Past Days</label>
+                                                    <input type="number" class="form-control" name="past_days" 
+                                                           placeholder="30" min="1" max="365" value="30">
+                                                </div>
+                                                <div class="col-6">
+                                                    <label for="limit" class="form-label small">Max Results</label>
+                                                    <select class="form-select" name="limit">
+                                                        <option value="50">50 properties</option>
+                                                        <option value="100" selected>100 properties</option>
+                                                        <option value="250">250 properties</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" name="mls_only" id="mls_only">
+                                                        <label class="form-check-label" for="mls_only">
+                                                            <i class="fas fa-certificate me-1"></i>MLS Only
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Search Button -->
+                            <button type="submit" class="btn btn-primary w-100 btn-lg" id="searchBtn">
+                                <i class="fas fa-search me-2"></i>
+                                <span class="search-btn-text">Search Properties</span>
+                                <div class="spinner-border spinner-border-sm ms-2 d-none" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="col-lg-8">
+                <!-- Loading State -->
+                <div id="loadingSpinner" class="loading-overlay text-center" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div class="loading-text mt-3">
+                        <strong>Searching Properties...</strong><br>
+                        <span id="loadingSubtext">This may take a few moments</span>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div id="resultsSection" style="display: none;">
+                    <div class="card shadow">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-list me-2"></i>Search Results
+                            </h5>
+                            <div>
+                                <span id="resultCount" class="badge bg-primary"></span>
+                                <button id="downloadBtn" class="btn btn-success btn-sm ms-2" style="display: none;">
+                                    <i class="fas fa-download me-1"></i>Download CSV
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="propertyCards" class="row"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Section -->
+                <div id="errorSection" style="display: none;">
+                    <div class="alert alert-danger">
+                        <h5><i class="fas fa-exclamation-triangle me-2"></i>Error</h5>
+                        <p id="errorMessage"></p>
+                    </div>
+                </div>
+
+                <!-- Welcome Section -->
+                <div id="welcomeSection">
+                    <div class="card shadow">
+                        <div class="card-body text-center py-5">
+                            <i class="fas fa-search-location display-1 text-muted mb-4"></i>
+                            <h3>Welcome to HomeHarvest Web App</h3>
+                            <p class="text-muted mb-4">
+                                Search for real estate properties from Realtor.com with advanced filtering options.
+                                Fill out the form on the left to get started.
+                            </p>
+                            
+                            <div class="row mt-5">
+                                <div class="col-md-4 mb-4">
+                                    <div class="feature-highlight">
+                                        <div class="feature-icon bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                            <i class="fas fa-bolt"></i>
+                                        </div>
+                                        <h5>Real-time Data</h5>
+                                        <p class="text-muted small">
+                                            Get the latest property listings directly from Realtor.com with up-to-date pricing.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <div class="feature-highlight">
+                                        <div class="feature-icon bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                            <i class="fas fa-chart-line"></i>
+                                        </div>
+                                        <h5>Market Insights</h5>
+                                        <p class="text-muted small">
+                                            Analyze trends with built-in statistics and market data visualization.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    <div class="feature-highlight">
+                                        <div class="feature-icon bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                            <i class="fas fa-download"></i>
+                                        </div>
+                                        <h5>Export & Analyze</h5>
+                                        <p class="text-muted small">
+                                            Download your search results as CSV files for further analysis.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-light text-center py-3 mt-5">
+        <div class="container">
+            <p class="mb-0 text-muted">
+                <i class="fas fa-code me-1"></i>
+                Powered by HomeHarvest | Real Estate Data Scraping Made Easy
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+# Cloudflare Pages configuration
+name = "homeharvest-webapp"
+compatibility_date = "2024-08-28"
+
+[build]
+command = ""
+cwd = "public"
+
+[env.production]
+# Production environment variables
+ENVIRONMENT = "production"
+
+[env.preview]
+# Preview environment variables  
+ENVIRONMENT = "preview"
